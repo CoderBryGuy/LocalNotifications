@@ -51,30 +51,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void startNotification() {
-
-        Intent i = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, 0);
-
-
-        NotificationChannel channel = new NotificationChannel(
-                CHANNEL_ID, "1", NotificationManager.IMPORTANCE_DEFAULT);
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.createNotificationChannel(channel);
-
-        Notification.Builder builder = new Notification.Builder(MainActivity.this, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.ic_baseline_add_alert_24)
-                .setContentTitle("Title")
-                .setContentText("Notification Text")
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
-
-        NotificationManagerCompat compat = NotificationManagerCompat.from(MainActivity.this);
-        compat.notify(1, builder.build());
-    }
-
 
 
 }
