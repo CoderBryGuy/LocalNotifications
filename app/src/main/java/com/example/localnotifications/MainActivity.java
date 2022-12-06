@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startNotification() {
 
+        //=========toast intent============
         Intent i = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                 Icon.createWithResource(this, R.drawable.ic_baseline_add_alert_24), "Toast Message"
                 , actionPending).build();
 
+
+        //==========dismiss intent=========
         Intent dimissIntent = new Intent(this, ReceiverDismiss.class);
         PendingIntent dismissPending = PendingIntent.getBroadcast(this, 0, dimissIntent, PendingIntent.FLAG_IMMUTABLE);
         Notification.Action dismissAction =
@@ -70,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
 
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.)
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.androidpng_241468);
+        Bitmap icon_thumb = BitmapFactory.decodeResource(getResources(), R.drawable.terminator_android);
+        String text = getResources().getString(R.string.big_text);
 
         Notification.Builder builder = new Notification.Builder(MainActivity.this, CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_baseline_add_alert_24)
@@ -78,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Notification Text")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setActions(action)
-                .setActions(dismissAction)
-                .setColor(Color.RED);
+                .addAction(action)
+                .addAction(dismissAction)
+                .setColor(Color.RED)
+                .setLargeIcon(icon_thumb)
+                .setStyle(new Notification.BigPictureStyle().bigPicture(icon))
+                .setStyle(new Notification.BigTextStyle().bigText(text));
 
         NotificationManagerCompat compat = NotificationManagerCompat.from(MainActivity.this);
         compat.notify(1, builder.build());
