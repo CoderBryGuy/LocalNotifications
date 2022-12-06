@@ -2,18 +2,25 @@ package com.example.localnotifications;
 
 import android.app.*;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import java.util.Calendar;
-
 public class MainActivity extends AppCompatActivity {
+
+    class TagsContract {
+        final static String TOAST = "toast";
+    }
 
     Button button;
     public final String CHANNEL_ID = "1";
+    int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,31 +28,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         button = findViewById(R.id.button);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY,14);
-        calendar.set(Calendar.MINUTE, 35);
-        calendar.set(Calendar.SECOND, 0);
-
-
-        Intent i = new Intent(getApplication(), NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                100, i, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-
-
-
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                counter++;
+                button.setText("" + counter);
 
-
+                if (counter % 5 == 0) {
+                    startNotification();
+                }
 
             }
         });
@@ -54,7 +46,22 @@ public class MainActivity extends AppCompatActivity {
     public void startNotification() {
 
         Intent i = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
+
+        Intent actionIntent = new Intent(this, Receivers.class);
+        actionIntent.putExtra(TagsContract.TOAST, "This is a notification message");
+        PendingIntent actionPending = PendingIntent.getBroadcast(this, 0, actionIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Notification.Action action = new Notification.Action.Builder(
+                Icon.createWithResource(this, R.drawable.ic_baseline_add_alert_24), "Toast Message"
+                , actionPending).build();
+
+        Intent dimissIntent = new Intent(this, ReceiverDismiss.class);
+        PendingIntent dismissPending = PendingIntent.getBroadcast(this, 0, dimissIntent, PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action dismissAction =
+                new Notification.Action.Builder(Icon.createWithResource(
+                        this, R.drawable.ic_baseline_add_alert_24),
+                        "Dismiss", dismissPending).build();
 
 
         NotificationChannel channel = new NotificationChannel(
@@ -63,18 +70,20 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
 
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.)
+
         Notification.Builder builder = new Notification.Builder(MainActivity.this, CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_baseline_add_alert_24)
                 .setContentTitle("Title")
                 .setContentText("Notification Text")
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
-
+                .setAutoCancel(true)
+                .setActions(action)
+                .setActions(dismissAction)
+                .setColor(Color.RED);
 
         NotificationManagerCompat compat = NotificationManagerCompat.from(MainActivity.this);
         compat.notify(1, builder.build());
     }
-
-
 
 }

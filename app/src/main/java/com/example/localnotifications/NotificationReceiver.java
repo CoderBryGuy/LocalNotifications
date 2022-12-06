@@ -1,14 +1,13 @@
 package com.example.localnotifications;
 
 
-
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import androidx.core.app.NotificationManagerCompat;
+
+import java.util.Calendar;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
@@ -34,4 +33,20 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManagerCompat compat = NotificationManagerCompat.from(context);
         compat.notify(1, builder.build());
     }
+
+
+
+    //=======================CODE TO PUT IN CALLING CLASS FOR THIS CLASS================
+
+//    Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 14);
+//        calendar.set(Calendar.MINUTE, 35);
+//        calendar.set(Calendar.SECOND, 0);
+//    Intent i = new Intent(getApplication(), NotificationReceiver.class);
+//    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+//            100, i, PendingIntent.FLAG_IMMUTABLE);
+//
+//
+//    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 }
